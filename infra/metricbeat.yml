@@ -1,0 +1,21 @@
+---
+metricbeat.modules:
+  - module: system
+    metricsets:
+      - cpu
+      - diskio
+      - filesystem
+      - fsstat
+      - memory
+      - network
+      - process
+    enabled: true
+    period: 15s
+    processors:
+      - drop_event.when.regexp:
+          system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|usr|hostfs/sys|hostfs/run|hostfs/dev|hostfs/run|hostfs/proc|hostfs/var)($|/)'
+    cpu.metrics: [percentages, normalized_percentages, ticks]
+    processes: ['.*']
+    process.include_cpu_ticks: false
+setup.kibana.host: kibana:5601
+output.elasticsearch.hosts: elasticsearch:9200
